@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bike Animation Sign In</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(45deg, #3498db, #8e44ad);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* Background bike animations */
+        .background-bikes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.2;
+            pointer-events: none;
+        }
+        
+        .background-bike {
+            position: absolute;
+            opacity: 0.7;
+        }
+        
+        .bike1 {
+            top: 15%;
+            animation: crossScreen 25s infinite linear;
+        }
+        
+        .bike2 {
+            top: 45%;
+            animation: crossScreen 20s infinite linear;
+            animation-delay: -10s;
+        }
+        
+        .bike3 {
+            top: 75%;
+            animation: crossScreen 30s infinite linear;
+            animation-delay: -5s;
+        }
+        
+        @keyframes crossScreen {
+            0% {
+                left: -150px;
+            }
+            100% {
+                left: 100%;
+            }
+        }
+        
+        /* Modern bike design */
+        .modern-bike {
+            position: relative;
+            width: 120px;
+            height: 70px;
+        }
+        
+        .bike-frame {
+            position: absolute;
+            width: 60px;
+            height: 30px;
+            border: 4px solid #333;
+            border-top: none;
+            border-radius: 0 0 40% 40%;
+            top: 15px;
+            left: 30px;
+        }
+        
+        .seat-post {
+            position: absolute;
+            width: 4px;
+            height: 20px;
+            background-color: #333;
+            top: -5px;
+            left: 35px;
+        }
+        
+        .handle-post {
+            position: absolute;
+            width: 4px;
+            height: 20px;
+            background-color: #333;
+            top: -5px;
+            left: 80px;
+        }
+        
+        .crossbar {
+            position: absolute;
+            width: 50px;
+            height: 4px;
+            background-color: #333;
+            top: 15px;
+            left: 35px;
+            transform: rotate(-5deg);
+        }
+        
+        .down-tube {
+            position: absolute;
+            width: 50px;
+            height: 4px;
+            background-color: #333;
+            top: 25px;
+            left: 30px;
+            transform: rotate(30deg);
+        }
+        
+        .wheel {
+            position: absolute;
+            width: 35px;
+            height: 35px;
+            border: 4px solid #333;
+            border-radius: 50%;
+            bottom: 5px;
+        }
+        
+        .front-wheel {
+            right: 10px;
+            animation: wheel-rotate 2s infinite linear;
+        }
+        
+        .back-wheel {
+            left: 10px;
+            animation: wheel-rotate 2s infinite linear;
+        }
+        
+        .spoke {
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            background-color: #333;
+            top: calc(50% - 1.5px);
+            animation: wheel-rotate 2s infinite linear reverse;
+        }
+        
+        .spoke:nth-child(2) {
+            transform: rotate(45deg);
+        }
+        
+        .spoke:nth-child(3) {
+            transform: rotate(90deg);
+        }
+        
+        .spoke:nth-child(4) {
+            transform: rotate(135deg);
+        }
+        
+        .handlebar {
+            position: absolute;
+            width: 15px;
+            height: 10px;
+            border-top: 4px solid #333;
+            border-right: 4px solid #333;
+            top: -5px;
+            right: 30px;
+            border-radius: 0 5px 0 0;
+        }
+        
+        .seat {
+            position: absolute;
+            width: 15px;
+            height: 6px;
+            background-color: #333;
+            top: -5px;
+            left: 30px;
+            border-radius: 30% 30% 0 0;
+        }
+        
+        .pedals {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            bottom: 15px;
+            left: 50px;
+        }
+        
+        .pedal {
+            position: absolute;
+            width: 20px;
+            height: 4px;
+            background-color: #333;
+            top: 8px;
+            animation: wheel-rotate 2s infinite linear;
+        }
+        
+        .pedal:nth-child(2) {
+            transform: rotate(90deg);
+        }
+        
+        @keyframes wheel-rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        
+        /* Main page styles */
+        .main-page {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+        
+        .main-title {
+            color: white;
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .main-subtitle {
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 3rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        
+        .main-buttons {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .main-button {
+            padding: 12px 24px;
+            background-color: white;
+            color: #3498db;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .main-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Card container for login/signup */
+        .card-container {
+            position: relative;
+            width: 400px;
+            height: 500px;
+            perspective: 1000px;
+            z-index: 10;
+            display: none;
+        }
+        
+        .card {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 1s;
+        }
+        
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+        
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .login-face {
+            transform: rotateY(180deg);
+        }
+        
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .switch-text {
+            text-align: center;
+            margin-top: 20px;
+            color: #555;
+        }
+        
+        .switch-btn {
+            background: none;
+            color: #3498db;
+            border: none;
+            padding: 0;
+            font: inherit;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        
+        .status-message {
+            text-align: center;
+            margin-top: 15px;
+            padding: 8px;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 8px 16px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: none;
+            z-index: 100;
+        }
+        
+        /* Dashboard styles */
+        .dashboard {
+            width: 90%;
+            max-width: 1200px;
+            height: 80vh;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            display: none;
+            z-index: 10;
+            overflow: auto;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 15px;
+        }
+        
+        .dashboard-title {
+            font-size: 2rem;
+            color: #333;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background-color: #3498db;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        
+        .logout-btn {
+            padding: 8px 16px;
+            background-color: #f1f1f1;
+            color: #333;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 15px;
+            transition: background-color 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background-color: #ddd;
+        }
+        
+        .dashboard-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .dashboard-card {
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .dashboard-card h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .dashboard-card p {
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #3498db;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Bikes -->
+    <div class="background-bikes">
+        <!-- Bike 1 -->
+        <div class="background-bike bike1">
+            <div class="modern-bike">
+                <div class="bike-frame"></div>
+                <div class="seat-post"></div>
+                <div class="handle-post"></div>
+                <div class="crossbar"></div>
+                <div class="down-tube"></div>
+                <div class="wheel back-wheel">
+                    <div class="spoke"></div>
+                    <div class="spoke"></div>
+                    <div class="spoke"></div>
+                    <div class="spoke"></div>
+                </div>
+                <div class="wheel front-wheel">
+                    <div class="spoke"></div>
+                    <div class="spoke"></div>
+                    <div class="spoke"></div>
+                    <div class="spoke"></div>
+                </div>
+                <div class="handlebar"></div>
+                <div class="seat"></div>
+                <div class="pedals">
+                    <div class="pedal"></div>
+                    <div class="pedal"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bike 2 -->
+        <div class="background-bike bike2">
+            <div class="modern-bike">
+                <div class="bike-frame"></div>
+                <div class="seat-post"></div>
+                <div class="handle-post"></div>
+                <div class="crossbar"></div>
+                <div class="down-tube"></div>
+                <div class="wheel back-wheel">
+                    <div class="spoke"></div>
+                    <div class="spoke"></div>
+                    <div class="spoke"></div>
+                    <div class="spoke"></div>
+                </div>
+                <div class="wheel front-wheel">
+                    <div class="spoke"></div>
+                    <div class="spoke"></div>
+                    <div class="spoke"></div>
+                    <div class="spoke"></div>
+                </div>
+                <div class="handlebar"></div>
+                <div class="seat"></div>
+                <div class="pedals">
+                    <div class="pedal"></div>
+                    <div class="pedal"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bike 3 -->
+        <div class="background-bike bike3">
+            <div class="modern-bike">
+                <div class="bike-frame"></div>
+                <div class="seat-post"></div>
+                <div class="handle-post"></div>
+                <div class="crossbar"></div>
+                <div class="down-tube"></div>
+                <div class="wheel back-wheel">
+                    <div class="spoke"></div>
+                    <div class="spoke"></div>
+                    <div class="spoke"></div>
+                    <div class="spoke"></div>
+                </div>
+                <div class="wheel front-wheel">
+                    <div class="spoke"></div>
+                    <div class="spoke"></div>
+                    <div class="spoke"></div>
+                    <div class="spoke"></div>
+                </div>
+                <div class="handlebar"></div>
+                <div class="seat"></div>
+                <div class="pedals">
+                    <div class="pedal"></div>
+                    <div class="pedal"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back Button -->
+    <button class="back-btn" id="back-btn">← Back to Home</button>
+
+    <!-- Main Page -->
+    <div class="main-page" id="main-page">
+        <h1 class="main-title">Bike Enthusiasts</h1>
+        <h2 class="main-subtitle">Join our community of cycling lovers</h2>
+        <div class="main-buttons">
+            <button class="main-button" id="show-signup-btn">Sign Up</button>
+            <button class="main-button" id="show-login-btn">Log In</button>
+        </div>
+    </div>
+
+    <!-- Login/Signup Card Container -->
+    <div class="card-container" id="card-container">
+        <div class="card" id="card">
+            <!-- Sign Up Face -->
+            <div class="card-face signup-face">
+                <h2>Create Account</h2>
+                <div class="input-group">
+                    <label for="signup-name">Full Name</label>
+                    <input type="text" id="signup-name" placeholder="Enter your name">
+                </div>
+                <div class="input-group">
+                    <label for="signup-email">Email</label>
+                    <input type="email" id="signup-email" placeholder="Enter your email">
+                </div>
+                <div class="input-group">
+                    <label for="signup-password">Password</label>
+                    <input type="password" id="signup-password" placeholder="Create a password">
+                </div>
+                <button id="signup-btn">Sign Up</button>
+                <div id="signup-status" class="status-message"></div>
+                <p class="switch-text">
+                    Already have an account? 
+                    <button class="switch-btn" id="go-to-login">Log In</button>
+                </p>
+            </div>
+            
+            <!-- Login Face -->
+            <div class="card-face login-face">
+                <h2>Welcome Back</h2>
+                <div class="input-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" placeholder="Enter your email">
+                </div>
+                <div class="input-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" placeholder="Enter your password">
+                </div>
+                <button id="login-btn">Log In</button>
+                <div id="login-status" class="status-message"></div>
+                <p class="switch-text">
+                    Don't have an account? 
+                    <button class="switch-btn" id="go-to-signup">Sign Up</button>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="dashboard" id="dashboard">
+        <div class="dashboard-header">
+            <h2 class="dashboard-title">Bike Enthusiasts Dashboard</h2>
+            <div class="user-info">
+                <div class="user-avatar" id="user-avatar">U</div>
+                <span id="user-name">User</span>
+                <button class="logout-btn" id="logout-btn">Logout</button>
+            </div>
+        </div>
+        <div class="dashboard-content">
+            <div class="dashboard-card">
+                <h3>Your Riding Stats</h3>
+                <p>Track your cycling progress and achievements.</p>
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-value">235</div>
+                        <div class="stat-label">KM RIDDEN</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">18</div>
+                        <div class="stat-label">RIDES</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">3.2K</div>
+                        <div class="stat-label">CALORIES</div>
+                    </div>
+                </div>
+            </div>
+            <div class="dashboard-card">
+                <h3>Upcoming Events</h3>
+                <p>No upcoming events at the moment.</p>
+                <p>Check back later for community rides and challenges!</p>
+            </div>
+            <div class="dashboard-card">
+                <h3>Your Bikes</h3>
+                <p>You haven't added any bikes yet.</p>
+                <p>Add your bikes to keep track of maintenance and usage.</p>
+            </div>
+            <div class="dashboard-card">
+                <h3>Community Leaderboard</h3>
+                <p>Join challenges to appear on the leaderboard!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/8.10.1/firebase-app.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/8.10.1/firebase-auth.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/8.10.1/firebase-firestore.min.js"></script>
+    
+    <script>
+        // Initialize Firebase
+        // Replace with your actual Firebase project configuration
+        const firebaseConfig = {
+  apiKey: "AIzaSyBrmKSaWpsXPJzBQuMgtdf3j4sN842EhkA",
+  authDomain: "project-fc1b4.firebaseapp.com",
+  projectId: "project-fc1b4",
+  storageBucket: "project-fc1b4.firebasestorage.app",
+  messagingSenderId: "379945896338",
+  appId: "1:379945896338:web:58ed669fcd19d72a2f594b"
+};
+
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        
+        // Get references to auth and firestore
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        
+        // DOM Elements - Pages
+        const mainPage = document.getElementById('main-page');
+        const cardContainer = document.getElementById('card-container');
+        const dashboard = document.getElementById('dashboard');
+        const backBtn = document.getElementById('back-btn');
+        
+        // DOM Elements - Authentication
+        const card = document.getElementById('card');
+        const showSignupBtn = document.getElementById('show-signup-btn');
+        const showLoginBtn = document.getElementById('show-login-btn');
+        const goToLoginBtn = document.getElementById('go-to-login');
+        const goToSignupBtn = document.getElementById('go-to-signup');
+        const signupBtn = document.getElementById('signup-btn');
+        const loginBtn = document.getElementById('login-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const signupStatus = document.getElementById('signup-status');
+        const loginStatus = document.getElementById('login-status');
+        const userAvatar = document.getElementById('user-avatar');
+        const userName = document.getElementById('user-name');
+        
+        // Function to show a specific page and hide others
+        function showPage(page) {
+            // Hide all pages
+            mainPage.style.display = 'none';
+            cardContainer.style.display = 'none';
+            dashboard.style.display = 'none';
+            
+            // Show the selected page
+            page.style.display = 'flex';
+            
+            // Show/hide back button
+            if (page === mainPage) {
+                backBtn.style.display = 'none';
+            } else {
+                backBtn.style.display = 'block';
+            }
+        }
+        
+        // Function to display status messages
+        function showStatus(element, message, isSuccess) {
+            element.textContent = message;
+            element.style.display = 'block';
+            
+            if (isSuccess) {
+                element.classList.add('success');
+                element.classList.remove('error');
+            } else {
+                element.classList.add('error');
+                element.classList.remove('success');
+            }
+            
+            // Hide the message after 5 seconds
+            setTimeout(() => {
+                element.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Update user info in the dashboard
+        function updateUserInfo(user) {
+            if (!user) return;
+            
+            db.collection('users').doc(user.uid).get()
+                .then((doc) => {
+                    if (doc.exists) {
+                        const data = doc.data();
+                        userName.textContent = data.name;
+                        userAvatar.textContent = data.name.charAt(0).toUpperCase();
+                    } else {
+                        // If document doesn't exist but user is authenticated (could happen with some auth methods)
+                        userName.textContent = user.email ? user.email.split('@')[0] : 'User';
+                        userAvatar.textContent = (user.email ? user.email.charAt(0) : 'U').toUpperCase();
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error getting user document:", error);
+                    // Set default values if there's an error
+                    userName.textContent = user.email ? user.email.split('@')[0] : 'User';
+                    userAvatar.textContent = (user.email ? user.email.charAt(0) : 'U').toUpperCase();
+                });
+        }
+        
+        // Navigation event listeners
+        showSignupBtn.addEventListener('click', () => {
+            card.classList.remove('flipped');
+            showPage(cardContainer);
+        });
+        
+        showLoginBtn.addEventListener('click', () => {
+            card.classList.add('flipped');
+            showPage(cardContainer);
+        });
+        
+        backBtn.addEventListener('click', () => {
+            showPage(mainPage);
+        });
+        
+        // Card flip event listeners
+        goToLoginBtn.addEventListener('click', () => {
+            card.classList.add('flipped');
+        });
+        
+        goToSignupBtn.addEventListener('click', () => {
+            card.classList.remove('flipped');
+        });
+        
+        // Sign up function
+        signupBtn.addEventListener('click', () => {
+            const name = document.getElementById('signup-name').value.trim();
+            const email = document.getElementById('signup-email').value.trim();
+            const password = document.getElementById('signup-password').value;
+            
+            if (!name || !email || !password) {
+                showStatus(signupStatus, 'Please fill in all fields', false);
+                return;
+            }
+            
+            // Create user with Firebase Auth
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // Store additional user info in Firestore
+                    return db.collection('users').doc(userCredential.user.uid).set({
+                        name: name,
+                        email: email,
+                        createdAt: new Date()
+                    });
+                })
+                .then(() => {
+                    showStatus(signupStatus, 'Account created successfully!', true);
+                    // Clear form
+                    document.getElementById('signup-name').value = '';
+                    document.getElementById('signup-email').value = '';
+                    document.getElementById('signup-password').value = '';
+                    
+                    // Redirect to dashboard after success
+                    setTimeout(() => {
+                        showPage(dashboard);
+                        // Update user info in the dashboard
+                        updateUserInfo(auth.currentUser);
+                    }, 1000);
+                })
+                .catch((error) => {
+                    showStatus(signupStatus, `Error: ${error.message}`, false);
+                });
+        });
+        
+        // Login function
+        loginBtn.addEventListener('click', () => {
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+            
+            if (!email || !password) {
+                showStatus(loginStatus, 'Please fill in all fields', false);
+                return;
+            }
+            
+            // Sign in with Firebase Auth
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    showStatus(loginStatus, 'Logged in successfully!', true);
+                    // Clear form
+                    document.getElementById('login-email').value = '';
+                    document.getElementById('login-password').value = '';
+                    
+                    // Redirect to dashboard
+                    setTimeout(() => {
+                        showPage(dashboard);
+                        // Update user info in the dashboard
+                        updateUserInfo(userCredential.user);
+                    }, 1000);
+                })
+                .catch((error) => {
+                    showStatus(loginStatus, `Error: ${error.message}`, false);
+                });
+        });
+        
+        // Logout function
+        logoutBtn.addEventListener('click', () => {
+            auth.signOut()
+                .then(() => {
+                    showPage(mainPage);
+                })
+                .catch((error) => {
+                    console.error('Error signing out:', error);
+                });
+        });
+        
+        // Check if user is already logged in
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                // User is signed in, show dashboard
+                updateUserInfo(user);
+                showPage(dashboard);
+            } else {
+                // No user is signed in, show main page
+                showPage(mainPage);
+            }
+        });
+
+        // Handle Enter key press in login form
+        document.getElementById('login-password').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                loginBtn.click();
+            }
+        });
+
+        // Handle Enter key press in signup form
+        document.getElementById('signup-password').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                signupBtn.click();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bike Enthusiasts Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(45deg, #3498db, #8e44ad);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Background bike animations - reused from original */
+        .background-bikes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+            pointer-events: none;
+        }
+        
+        .background-bike {
+            position: absolute;
+            opacity: 0.7;
+        }
+        
+        .bike1 {
+            top: 15%;
+            animation: crossScreen 25s infinite linear;
+        }
+        
+        .bike2 {
+            top: 45%;
+            animation: crossScreen 20s infinite linear;
+            animation-delay: -10s;
+        }
+        
+        .bike3 {
+            top: 75%;
+            animation: crossScreen 30s infinite linear;
+            animation-delay: -5s;
+        }
+        
+        @keyframes crossScreen {
+            0% {
+                left: -150px;
+            }
+            100% {
+                left: 100%;
+            }
+        }
+        
+        /* Modern bike design - reused from original */
+        .modern-bike {
+            position: relative;
+            width: 120px;
+            height: 70px;
+        }
+        
+        .bike-frame {
+            position: absolute;
+            width: 60px;
+            height: 30px;
+            border: 4px solid #333;
+            border-top: none;
+            border-radius: 0 0 40% 40%;
+            top: 15px;
+            left: 30px;
+        }
+        
+        .seat-post {
+            position: absolute;
+            width: 4px;
+            height: 20px;
+            background-color: #333;
+            top: -5px;
+            left: 35px;
+        }
+        
+        .handle-post {
+            position: absolute;
+            width: 4px;
+            height: 20px;
+            background-color: #333;
+            top: -5px;
+            left: 80px;
+        }
+        
+        .crossbar {
+            position: absolute;
+            width: 50px;
+            height: 4px;
+            background-color: #333;
+            top: 15px;
+            left: 35px;
+            transform: rotate(-5deg);
+        }
+        
+        .down-tube {
+            position: absolute;
+            width: 50px;
+            height: 4px;
+            background-color: #333;
+            top: 25px;
+            left: 30px;
+            transform: rotate(30deg);
+        }
+        
+        .wheel {
+            position: absolute;
+            width: 35px;
+            height: 35px;
+            border: 4px solid #333;
+            border-radius: 50%;
+            bottom: 5px;
+        }
+        
+        .front-wheel {
+            right: 10px;
+            animation: wheel-rotate 2s infinite linear;
+        }
+        
+        .back-wheel {
+            left: 10px;
+            animation: wheel-rotate 2s infinite linear;
+        }
+        
+        .spoke {
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            background-color: #333;
+            top: calc(50% - 1.5px);
+            animation: wheel-rotate 2s infinite linear reverse;
+        }
+        
+        .spoke:nth-child(2) {
+            transform: rotate(45deg);
+        }
+        
+        .spoke:nth-child(3) {
+            transform: rotate(90deg);
+        }
+        
+        .spoke:nth-child(4) {
+            transform: rotate(135deg);
+        }
+        
+        .handlebar {
+            position: absolute;
+            width: 15px;
+            height: 10px;
+            border-top: 4px solid #333;
+            border-right: 4px solid #333;
+            top: -5px;
+            right: 30px;
+            border-radius: 0 5px 0 0;
+        }
+        
+        .seat {
+            position: absolute;
+            width: 15px;
+            height: 6px;
+            background-color: #333;
+            top: -5px;
+            left: 30px;
+            border-radius: 30% 30% 0 0;
+        }
+        
+        .pedals {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            bottom: 15px;
+            left: 50px;
+        }
+        
+        .pedal {
+            position: absolute;
+            width: 20px;
+            height: 4px;
+            background-color: #333;
+            top: 8px;
+            animation: wheel-rotate 2s infinite linear;
+        }
+        
+        .pedal:nth-child(2) {
+            transform: rotate(90deg);
+        }
+        
+        @keyframes wheel-rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        
+        /* Dashboard styles - enhanced */
+        .dashboard {
+            width: 95%;
+            max-width: 1400px;
+            margin: 20px auto;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .dashboard-title {
+            font-size: 2rem;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .dashboard-title-icon {
+            color: #3498db;
+            font-size: 2rem;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background-color: #3498db;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        
+        .logout-btn {
+            padding: 8px 16px;
+            background-color: #f1f1f1;
+            color: #333;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 15px;
+            transition: all 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background-color: #ddd;
+        }
+        
+        /* Search Bar - New */
+        .search-container {
+            margin: 20px 0;
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto 20px;
+        }
+        
+        .search-bar {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            padding-left: 45px;
+        }
+        
+        .search-bar:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.3);
+            outline: none;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777;
+        }
+        
+        /* Bike Categories - New */
+        .categories {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding: 10px 0;
+            margin-bottom: 20px;
+        }
+        
+        .category {
+            padding: 10px 20px;
+            background-color: #f1f1f1;
+            border-radius: 30px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .category.active {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .category:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .category.active:hover {
+            background-color: #2980b9;
+        }
+        
+        /* Stats Section - Enhanced */
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            border-radius: 10px;
+            padding: 20px;
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-icon {
+            margin-right: 15px;
+            font-size: 2rem;
+            background-color: rgba(255, 255, 255, 0.2);
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        
+        .stat-info {
+            flex-grow: 1;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        /* Dashboard Tabs - New */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .tab.active {
+            border-bottom-color: #3498db;
+            color: #3498db;
+        }
+        
+        .tab:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Bike Showcase - New */
+        .bike-showcase {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .bike-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .bike-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .bike-image {
+            height: 180px;
+            width: 100%;
+            object-fit: cover;
+            background-color: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .bike-details {
+            padding: 15px;
+        }
+        
+        .bike-name {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        
+        .bike-type {
+            font-size: 0.9rem;
+            color: #777;
+            margin-bottom: 10px;
+        }
+        
+        .bike-features {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .bike-feature {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+        
+        .feature-value {
+            font-weight: bold;
+            color: #3498db;
+        }
+        
+        .feature-label {
+            color: #777;
+            font-size: 0.75rem;
+        }
+        
+        .bike-price {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 10px;
+        }
+        
+        .bike-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .bike-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .view-btn {
+            background-color: #3498db;
+            color: white;
+            flex-grow: 1;
+        }
+        
+        .view-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .favorite-btn {
+            background-color: #f1f1f1;
+            color: #777;
+            width: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .favorite-btn:hover {
+            background-color: #ff6b6b;
+            color: white;
+        }
+        
+        /* Bike Details Modal - New */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            overflow: auto;
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            width: 90%;
+            max-width: 900px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: modalFade 0.3s ease;
+        }
+        
+        @keyframes modalFade {
+            from {opacity: 0; transform: translateY(-30px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+        
+        .modal-header {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .modal-title {
+            font-size: 1.8rem;
+            color: #333;
+        }
+        
+        .close-modal {
+            font-size: 2rem;
+            cursor: pointer;
+            color: #777;
+            transition: color 0.3s;
+        }
+        
+        .close-modal:hover {
+            color: #333;
+        }
+        
+        .modal-body {
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .bike-detail-image {
+            flex: 1;
+            min-width: 300px;
+            height: 300px;
+            background-color: #f5f5f5;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .bike-detail-info {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .bike-detail-title {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+        
+        .bike-detail-type {
+            color: #777;
+            margin-bottom: 15px;
+        }
+        
+        .bike-detail-price {
+            font-size: 1.8rem;
+            color: #3498db;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .bike-detail-features {
+            margin-bottom: 20px;
+        }
+        
+        .bike-detail-features h3 {
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+        }
+        
+        .feature-icon {
+            margin-right: 10px;
+            color: #3498db;
+        }
+        
+        .bike-description {
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .action-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .buy-btn {
+            background-color: #3498db;
+            color: white;
+            flex-grow: 1;
+        }
+        
+        .buy-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .add-wishlist-btn {
+            background-color: #f1f1f1;
+            color: #333;
+        }
+        
+        .add-wishlist-btn:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .stats-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .user-info {
+                align-self: flex-end;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .stats-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .bike-showcase {
+                grid-template-columns: 1fr;
+            }
+            
+            .feature-list {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Bike Search Results - New */
+        .search-results {
+            display: none;
+            margin-top: 20px;
+        }
+        
+        .search-results-header {
+            margin-bottom: 15px;
+        }
+        
+        .search-results-count {
+            font-weight: bold;
+            color: #3498db;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 30px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Bikes (reused from original) -->
+    <div class="background-bikes">
+        <!-- Bike 1 -->
+        <div class="background-bike bike1">
+            <div class="modern-bike">
+                <div class="bike-frame"></div>
+                <div class="seat-post"></div>
+                <div class="handle-post"></div>
+                <div class="crossbar"></div>
+                <div class="down-tube"></div>
+                <div class="wheel back-wheel">
+                    <div class="spoke"></div>
+                    <div class="spoke"></div>
+                    <div class="spoke"></div>
+                    <div class="spoke"></div>
+                </div>
+                <div class="wheel front-wheel">
+                    <div class="spoke"></div>
+                    <div class="spoke"></div>
+                    <div class="spoke"></div>
+                    <div class="spoke"></div>
+                </div>
+                <div class="handlebar"></div>
+                <div class="seat"></div>
+                <div class="pedals">
+                    <div class="pedal"></div>
+                    <div class="pedal"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bike 2 -->
+        <div class="background-bike bike2">
+            <div class="modern-bike">
+                <div class="bike-frame"></div>
+                <div class="seat-post"></div>
+                <div class="handle-post"></div>
+                <div class="crossbar"></div>
+                <div class="down-tube"></div>
+                <div class="wheel back-wheel">
+                    <div class="spoke"></div>
+                    <div class="spoke"></div>
+                    <div class="spoke"></div>
+                    <div class="spoke"></div>
+                </div>
+                <div class="wheel front-wheel">
+                    <div class="spoke"></div>
+                    <div class="spoke"></div>
+                    <div class="spoke"></div>
+                    <div class="spoke"></div>
+                </div>
+                <div class="handlebar"></div>
+                <div class="seat"></div>
+                <div class="pedals">
+                    <div class="pedal"></div>
+                    <div class="pedal"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bike 3 -->
+        <div class="background-bike bike3">
+            <div class="modern-bike">
+                <div class="bike-frame"></div>
+                <div class="seat-post"></div>
+                <div class="handle-post"></div>
+                <div class="crossbar"></div>
+                <div class="down-tube"></div>
+                <div class="wheel back-wheel">
+                    <div class="spoke"></div>
+                    <div class="spoke"></div>
+                    <div class="spoke"></div>
+                    <div class="spoke"></div>
+                </div>
+                <div class="wheel front-wheel">
+                    <div class="spoke"></div>
+                    <div class="spoke"></div>
+                    <div class="spoke"></div>
+                    <div class="spoke"></div>
+                </div>
+                <div class="handlebar"></div>
+                <div class="seat"></div>
+                <div class="pedals">
+                    <div class="pedal"></div>
+                    <div class="pedal"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="dashboard">
+        <div class="dashboard-header">
+            <h2 class="dashboard-title">
+                <span class="dashboard-title-icon">🚲</span>
+                Bike Enthusiasts Hub
+            </h2>
+            <div class="user-info">
+                <div class="user-avatar" id="user-avatar">J</div>
+                <span id="user-name">John Rider</span>
+                <button class="logout-btn" id="logout-btn">Logout</button>
+            </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-container">
+            <input type="text" class="search-bar" id="bike-search" placeholder="Search for bikes by name, type, or features...">
+            <span class="search-icon">🔍</span>
+        </div>
+
+        <!-- Bike Categories -->
+        <div class="categories">
+            <div class="category active">All Bikes</div>
+            <div class="category">Mountain</div>
+            <div class="category">Road</div>
+            <div class="category">Hybrid</div>
+            <div class="category">Electric</div>
+            <div class="category">BMX</div>
+            <div class="category">Commuter</div>
+            <div class="category">Kids</div>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-icon">🗺️</div>
+                <div class="stat-info">
+                    <div class="stat-value">235</div>
+                    <div class="stat-label">KM RIDDEN THIS MONTH</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🚴</div>
+                <div class="stat-info">
+                    <div class="stat-value">18</div>
+                    <div class="stat-label">RIDES COMPLETED</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🔥</div>
+                <div class="stat-info">
+                    <div class="stat-value">3,245</div>
+                    <div class="stat-label">CALORIES BURNED</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⭐</div>
+                <div class="stat-info">
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">BIKES IN COLLECTION</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Tabs -->
+        <div class="tabs">
+            <div class="tab active" data-tab="featured">Featured Bikes</div>
+            <div class="tab" data-tab="collection">My Collection</div>
+            <div class="tab" data-tab="activities">Recent Activities</div>
+            <div class="tab" data-tab="events">Upcoming Events</div>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="tab-content active" id="featured-content">
+            <!-- Bike Showcase -->
+            <div class="bike-showcase">
+                <!-- Bike Card 1 -->
+                <div class="bike-card">
+                    <div class="bike-image">
+                        <img src="/api/placeholder/280/180" alt="Mountain Bike">
+                    </div>
+                    <div class="bike-details">
+                        <h3 class="bike-name">Trailblazer X3</h3>
+                        <div class="bike-type">Mountain Bike</div>
+                        <div class="bike-features">
+                            <div class="bike-feature">
+                                <span class="feature-value">27.5"</span>
+                                <span class="feature-label">WHEELS</span>
+                            </div>
+                            <div class="bike-feature">
+                                <span class="feature-value">12.5kg</span>
+                                <span class="feature-label">WEIGHT</span>
+                            </div>
+                            <div class="bike-feature">
+                                <span class="feature-value">21</span>
+                                <span class="feature-label">SPEEDS</span>
+                            </div>
+                        </div>
+                        <div class="bike-price">$1,499</div>
+                        <div class="bike-actions">
+                            <button class="bike-btn view-btn" data-bike-id="1">View Details</button>
+                            <button class="bike-btn favorite-btn">❤</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Bike Card 2 -->
+                <div class="bike-card">
+                    <div class="bike-image">
+                        <img src="/api/placeholder/280/180" alt="Road Bike">
+                    </div>
+                    <div class="bike-details">
+                        <h3 class="bike-name">SpeedMaster Pro</h3>
+                        <div class="bike-type">Road Bike</div>
+                        <div class="bike-features">
+                            <div class="bike-feature">
+                                <span class="feature-value">700c</span>
+                                <span class="feature-label">WHEELS</span>
+                            </div>
+                            <div class="bike-feature">
+                                <span class="feature-value">8.2kg</span>
+                                <span class="feature-label">WEIGHT</span>
+                            </div>
+                            <div class="bike-feature">
+                                <span class="feature-value">22</span>
+                                <span class="feature-label">SPEEDS</span>
+                            </div>
+                        </div>
+                        <div class="bike-price">$2,299</div>
+                        <div class="bike-actions">
+                            <button class="bike-btn view-btn" data-bike-id="2">View Details</button>
+                            <button class="bike-btn favorite-btn">❤</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Bike Card 3 -->
+                <div class="bike-card">
+                    <div class="bike-image">
+                        <img src="/api/placeholder/280/180" alt="Electric Bike">
+                    </div>
+                    <div class="bike-details">
+                        <h3 class="bike-name">E-Rider City</h3>
+                        <div class="bike-type">Electric Bike</div>
+                        <div class="bike-features">
+                            <div class="bike-feature">
+                                <span class="feature-value">26"</span>
+                                <span class="feature-label">WHEELS</span>
+                            </div>
+                            <div class="bike-feature">
+                                <span class="feature-value">18kg</span>
+                                <span class="feature-label">WEIGHT</span>
+                            </div>
+                            <div class="bike-feature">
+                                <span class="feature-value">80km</span>
+                                <span class="feature-label">RANGE</span>
+                            </div>
+                        </div>
+                        <div class="bike-price">$1,899</div>
+                        <div class="bike-actions">
+                            <button class="bike-btn view-btn" data-bike-id="3">View Details</button>
+                            <button class="bike-btn favorite-btn">❤</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Bike Card 4 -->
+                <div class="bike-card">
+                    <div class="bike-image">
+                        <img src="/api/placeholder/280/180" alt="Hybrid Bike">
+                    </div>
+                    <div class="bike-details">
+                        <h3 class="bike-name">Urban Cruiser</h3>
+                        <div class="bike-type">Hybrid Bike</div>
+                        <div class="bike-features">
+                            <div class="bike-feature">
+                                <span class="feature-value">28"</span>
+                                <span class="feature-label">WHEELS</span>
+                            </div>
+                            <div class="bike-feature">
+                                <span class="feature-value">11.8kg</span>
+                                <span class="feature-label">WEIGHT</span>
+                            </div>
+                            <div class="bike-feature">
+                                <span class="feature-value">18</span>
+                                <span class="feature-label">SPEEDS</span>
+                            </div>
+                        </div>
+                        <div class="bike-price">$899</div>
+                        <div class="bike-actions">
+                            <button class="bike-btn view-btn" data-bike-id="4">View Details</button>
+                            <button class="bike-btn favorite-btn">❤</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- My Collection Tab Content -->
+        <div class="tab-content" id="collection-content">
+            <div class="bike-showcase">
+                <!-- My Bike 1 -->
+                <div class="bike-card">
+                    <div class="bike-image">
+                        <img src="/api/placeholder/280/180" alt="My Mountain Bike">
+                    </div>
+                    <div class="bike-details">
+                        <h3 class="bike-name">My Trailblazer X2</h3>
+                        <div class="bike-type">Mountain Bike</div>
+                        <div class="bike-features">
+                            <div class="bike-feature">
+                                <span class="feature-value">27.5"</span>
+                                <span class="feature-label">WHEELS</span>
+                            </div>
+                            <div class="bike-feature">
+                                <span class="feature-value">1253km</span>
+                                <span class="feature-label">DISTANCE</span>
+                            </div>
+                            <div class="bike-feature">
+                                <span class="feature-value">2y 3m</span>
+                                <span class="feature-label">OWNED</span>
+                            </div>
+                        </div>
+                        <div class="bike-price">Last serviced: 2 weeks ago</div>
+                        <div class="bike-actions">
+                            <button class="bike-btn view-btn">Service History</button>
+                            <button class="bike-btn favorite-btn">📝</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- My Bike 2 -->
+                <div class="bike-card">
+                    <div class="bike-image">
+                        <img src="/api/placeholder/280/180" alt="My Road Bike">
+                    </div>
+                    <div class="bike-details">
+                        <h3 class="bike-name">My SpeedRacer</h3>
+                        <div class="bike-type">Road Bike</div>
+                        <div class="bike-features">
+                            <div class="bike-feature">
+                                <span class="feature-value">700c</span>
+                                <span class="feature-label">WHEELS</span>
+                            </div>
+                            <div class="bike-feature">
+                                <span class="feature-value">3245km</span>
+                                <span class="feature-label">DISTANCE</span>
+                            </div>
+                            <div class="bike-feature">
+                                <span class="feature-value">1y 6m</span>
+                                <span class="feature-label">OWNED</span>
+                            </div>
+                        </div>
+                        <div class="bike-price">Last serviced: 1 month ago</div>
+                        <div class="bike-actions">
+                            <button class="bike-btn view-btn">Service History</button>
+                            <button class="bike-btn favorite-btn">📝</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Activities Tab Content -->
+        <div class="tab-content" id="activities-content">
+            <div class="bike-showcase">
+                <!-- Activity 1 -->
+                <div class="bike-card">
+                    <div class="bike-image">
+                        <img src="/api/placeholder/280/180" alt="Mountain Trail">
+                    </div>
+                    <div class="bike-details">
+                        <h3 class="bike-name">Forest Hill Trail</h3>
+                        <div class="bike-type">Mountain Bike • Yesterday</div>
+                        <div class="bike-features">
+                            <div class="bike-feature">
+                                <span class="feature-value">24.5km</span>
+                                <span class="feature-label">DISTANCE</span>
+                            </div>
+                            <div class="bike-feature">
+                                <span class="feature-value">1h 45m</span>
+                                <span class="feature-label">TIME</span>
+                            </div>
+                            <div class="bike-feature">
+                                <span class="feature-value">420m</span>
+                                <span class="feature-label">ELEVATION</span>
+                            </div>
+                        </div>
+                        <div class="bike-price">452 calories burned</div>
+                        <div class="bike-actions">
+                            <button class="bike-btn view-btn">View Activity</button>
+                            <button class="bike-btn favorite-btn">📊</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity 2 -->
+                <div class="bike-card">
+                    <div class="bike-image">
+                        <img src="/api/placeholder/280/180" alt="Road Ride">
+                    </div>
+                    <div class="bike-details">
+                        <h3 class="bike-name">City Loop Ride</h3>
+                        <div class="bike-type">Road Bike • 3 days ago</div>
+                        <div class="bike-features">
+                            <div class="bike-feature">
+                                <span class="feature-value">35.2km</span>
+                                <span class="feature-label">DISTANCE</span>
+                            </div>
+                            <div class="bike-feature">
+                                <span class="feature-value">1h 30m</span>
+                                <span class="feature-label">TIME</span>
+                            </div>
+                            <div class="bike-feature">
+                                <span class="feature-value">120m</span>
+                                <span class="feature-label">ELEVATION</span>
+                            </div>
+                        </div>
+                        <div class="bike-price">380 calories burned</div>
+                        <div class="bike-actions">
+                            <button class="bike-btn view-btn">View Activity</button>
+                            <button class="bike-btn favorite-btn">📊</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Events Tab Content -->
+        <div class="tab-content" id="events-content">
+            <div class="bike-showcase">
+                <!-- Event 1 -->
+                <div class="bike-card">
+                    <div class="bike-image">
+                        <img src="/api/placeholder/280/180" alt="Group Ride">
+                    </div>
+                    <div class="bike-details">
+                        <h3 class="bike-name">Weekend Group Ride</h3>
+                        <div class="bike-type">Road • This Saturday, 8:00 AM</div>
+                        <div class="bike-features">
+                            <div class="bike-feature">
+                                <span class="feature-value">45km</span>
+                                <span class="feature-label">DISTANCE</span>
+                            </div>
+                            <div class="bike-feature">
+                                <span class="feature-value">15</span>
+                                <span class="feature-label">RIDERS</span>
+                            </div>
+                            <div class="bike-feature">
+                                <span class="feature-value">Medium</span>
+                                <span class="feature-label">DIFFICULTY</span>
+                            </div>
+                        </div>
+                        <div class="bike-price">City Park Starting Point</div>
+                        <div class="bike-actions">
+                            <button class="bike-btn view-btn">Join Event</button>
+                            <button class="bike-btn favorite-btn">📌</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Event 2 -->
+                <div class="bike-card">
+                    <div class="bike-image">
+                        <img src="/api/placeholder/280/180" alt="MTB Race">
+                    </div>
+                    <div class="bike-details">
+                        <h3 class="bike-name">Mountain Trail Challenge</h3>
+                        <div class="bike-type">MTB • Next Sunday, 9:00 AM</div>
+                        <div class="bike-features">
+                            <div class="bike-feature">
+                                <span class="feature-value">32km</span>
+                                <span class="feature-label">DISTANCE</span>
+                            </div>
+                            <div class="bike-feature">
+                                <span class="feature-value">50+</span>
+                                <span class="feature-label">RIDERS</span>
+                            </div>
+                            <div class="bike-feature">
+                                <span class="feature-value">Hard</span>
+                                <span class="feature-label">DIFFICULTY</span>
+                            </div>
+                        </div>
+                        <div class="bike-price">$25 Registration Fee</div>
+                        <div class="bike-actions">
+                            <button class="bike-btn view-btn">Register</button>
+                            <button class="bike-btn favorite-btn">📌</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Results -->
+        <div class="search-results" id="search-results">
+            <div class="search-results-header">
+                <h3>Search Results: <span class="search-results-count">0</span> bikes found</h3>
+            </div>
+            <div class="bike-showcase" id="search-results-container">
+                <!-- Search results will be dynamically added here -->
+            </div>
+            <div class="no-results" id="no-results">
+                <h3>No bikes found matching your search.</h3>
+                <p>Try different keywords or browse our categories.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bike Details Modal -->
+    <div class="modal" id="bike-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Bike Details</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="bike-detail-image">
+                    <img src="/api/placeholder/400/300" alt="Bike">
+                </div>
+                <div class="bike-detail-info">
+                    <h2 class="bike-detail-title">Bike Name</h2>
+                    <div class="bike-detail-type">Bike Type</div>
+                    <div class="bike-detail-price">$0,000</div>
+                    
+                    <div class="bike-detail-features">
+                        <h3>Key Features</h3>
+                        <div class="feature-list">
+                            <div class="feature-item">
+                                <span class="feature-icon">⚙️</span>
+                                <span>21-Speed Shimano Gears</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon">🛡️</span>
+                                <span>Disc Brakes</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon">⚖️</span>
+                                <span>Lightweight Aluminum Frame</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon">🏔️</span>
+                                <span>Front Suspension</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon">🔋</span>
+                                <span>Tubeless Ready Wheels</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon">🔄</span>
+                                <span>Quick Release System</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bike-description">
+                        <p>This versatile bike offers exceptional performance for all your cycling adventures. With its durable frame and high-quality components, it's designed to provide comfort, speed, and reliability whether you're commuting through city streets or exploring off-road trails.</p>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="action-btn buy-btn">Add to Cart</button>
+                        <button class="action-btn add-wishlist-btn">Add to Wishlist</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="action-btn" id="close-modal-btn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab functionality
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                tab.classList.add('active');
+                
+                // Hide all tab contents
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                
+                // Show corresponding tab content
+                const tabId = tab.getAttribute('data-tab');
+                document.getElementById(`${tabId}-content`).classList.add('active');
+                
+                // Hide search results when switching tabs
+                document.getElementById('search-results').style.display = 'none';
+            });
+        });
+        
+        // Modal functionality
+        const modal = document.getElementById('bike-modal');
+        const closeModal = document.querySelector('.close-modal');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        
+        // Open modal when View Details button is clicked
+        document.querySelectorAll('.view-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                modal.style.display = 'block';
+                
+                // In a real app, you would fetch bike details based on data-bike-id
+                const bikeId = btn.getAttribute('data-bike-id');
+                // And update modal content accordingly
+            });
+        });
+        
+        // Close modal when X is clicked
+        closeModal.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+        
+        // Close modal when Close button is clicked
+        closeModalBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+        
+        // Close modal when clicking outside of it
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+        
+        // Search functionality
+        const searchBar = document.getElementById('bike-search');
+        const searchResults = document.getElementById('search-results');
+        const searchResultsContainer = document.getElementById('search-results-container');
+        const searchResultsCount = document.querySelector('.search-results-count');
+        const noResults = document.getElementById('no-results');
+        
+        searchBar.addEventListener('input', () => {
+            const searchValue = searchBar.value.trim().toLowerCase();
+            
+            if (searchValue.length > 2) {
+                // Show search results section
+                searchResults.style.display = 'block';
+                
+                // In a real app, you would filter bikes based on search value
+                // For now, let's just show a sample result if search contains "bike"
+                if (searchValue.includes('bike')) {
+                    searchResultsCount.textContent = '1';
+                    noResults.style.display = 'none';
+                    searchResultsContainer.style.display = 'grid';
+                    
+                    // Sample search result
+                    searchResultsContainer.innerHTML = `
+                        <div class="bike-card">
+                            <div class="bike-image">
+                                <img src="/api/placeholder/280/180" alt="Search Result">
+                            </div>
+                            <div class="bike-details">
+                                <h3 class="bike-name">Search Result Bike</h3>
+                                <div class="bike-type">Found in Search</div>
+                                <div class="bike-features">
+                                    <div class="bike-feature">
+                                        <span class="feature-value">26"</span>
+                                        <span class="feature-label">WHEELS</span>
+                                    </div>
+                                    <div class="bike-feature">
+                                        <span class="feature-value">12kg</span>
+                                        <span class="feature-label">WEIGHT</span>
+                                    </div>
+                                    <div class="bike-feature">
+                                        <span class="feature-value">18</span>
+                                        <span class="feature-label">SPEEDS</span>
+                                    </div>
+                                </div>
+                                <div class="bike-price">$1,299</div>
+                                <div class="bike-actions">
+                                    <button class="bike-btn view-btn">View Details</button>
+                                    <button class="bike-btn favorite-btn">❤</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    // No results
+                    searchResultsCount.textContent = '0';
+                    noResults.style.display = 'block';
+                    searchResultsContainer.style.display = 'none';
+                }
+            } else if (searchValue.length === 0) {
+                // Hide search results when search is cleared
+                searchResults.style.display = 'none';
+            }
+        });
+        
+        // Category selection
+        document.querySelectorAll('.category').forEach(category => {
+            category.addEventListener('click', () => {
+                // Remove active class from all categories
+                document.querySelectorAll('.category').forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked category
+                category.classList.add('active');
+                
+                // In a real app, you would filter bikes based on selected category
+            });
+        });
+    </script>
+</body>
+</html>
